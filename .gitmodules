@@ -1,0 +1,6 @@
+[submodule "lib/quan"]
+	path = lib/quan
+	url = https://github.com/pabristow/quan.git
+[submodule "lib/svg_plot"]
+	path = lib/svg_plot
+	url = https://github.com/pabristow/svg_plot.git
