@@ -2833,10 +2833,10 @@ my_plot.x_value_ioflags(ios::dec | ios::scientific).x_value_precision(2);
         { // max <= min.
           throw std::runtime_error("Y range: y max <= y min!");
         }
-        if((max_y - min_y) < std::numeric_limits<double>::epsilon() * 1000)
-        { // Range too small to display.
-          throw std::runtime_error("Y range too small!" );
-        }
+        // if((max_y - min_y) < std::numeric_limits<double>::epsilon() * 1000)
+        // { // Range too small to display.
+        //   throw std::runtime_error("Y range too small!" );
+        // }
         y_axis_.min_ = min_y;
         y_axis_.max_ = max_y;
         y_autoscale_ = false;
