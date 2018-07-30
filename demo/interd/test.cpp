@@ -1,93 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <map>
-#include <boost/svg_plot/svg_2d_plot.hpp>
-
-void deserialize(
-    std::string src,
-    std::vector<std::vector<double> > &var) {
-
-    std::ifstream infile;
-	infile.open(src.c_str(), std::ios::binary|std::ios::in);
-
-    if(!infile.is_open()) {
-        std::cout << "The file can not be open.\n";
-    }
-    while(infile.is_open() && !infile.eof()) {
-        int size = 0;
-        if(infile.eof()) {
-            break;
-        }
-        infile.read(reinterpret_cast<char *>(&size), sizeof(size));
-        
-        if(infile.eof()) {
-            // std::cout << "size: " << size << "\n";
-            // std::cerr << "Broken cols files.\n";
-            break;
-        }
-        if(size == 0) {
-            // std::cout << "empty array to be read\n";
-            continue;
-        }
-        std::vector<double> v(size);
-        infile.read(reinterpret_cast<char *>(&v[0]), sizeof(double)*size);
-        var.push_back(v);
-        // std::cout << strtool::join(v, ", ") << "\n";
-    }
-	
-    infile.close();
-}
-
-boost::svg::svg_color svg_colors[] = {
-	boost::svg::svg_color(0xff, 0x00, 0x00),
-	boost::svg::svg_color(0x00, 0x00, 0xff),
-	boost::svg::svg_color(0x00, 0x00, 0x00),
-	boost::svg::svg_color(0x00, 0x80, 0x00),
-	boost::svg::svg_color(0xff, 0x00, 0xff),
-	boost::svg::svg_color(0xdb, 0x70, 0x93),
-	boost::svg::svg_color(0x94, 0x00, 0xd3),
-	boost::svg::svg_color(0x00, 0xff, 0xff),
-	boost::svg::svg_color(0x00, 0xff, 0x00),
-	boost::svg::svg_color(0xff, 0x8c, 0x00),
-	boost::svg::svg_color(0xa5, 0x2a, 0x2a),
-	boost::svg::svg_color(0xff, 0x14, 0x93),
-	boost::svg::svg_color(0x00, 0xbf, 0x19),
-	boost::svg::svg_color(0xa0, 0x52, 0x2d),
-	boost::svg::svg_color(0xfa, 0x80, 0x72),
-	boost::svg::svg_color(0x80, 0x80, 0x80),
-};	
-
-boost::svg::point_shape shapes[] = {
-	boost::svg::circlet, /*!< Circle. Name was changed to round to avoid clash with function named circle,
-	but was then found to clash with C++ Standard numeric function round.
-	Full qualification `point_shape::round` requires C++11 support to compile, so then changed to circlet.
-	*/
-	boost::svg::square, //!< Square.
-	// boost::svg::point, //!< Small solid point.
-	// boost::svg::egg, //!< Ellipse.
-	// boost::svg::unc_ellipse, //!< Ellipse sized using uncertainty estimate of x and y, typically about twice standard deviation or 95% confidence interval.
-	boost::svg::vertical_line,  //!< Vertical line up & down from axis.
-	// boost::svg::horizontal_line, //!< Horizontal line left & right from axis.
-	// boost::svg::vertical_tick, //!< Vertical tick up from axis.
-	// boost::svg::horizontal_tick, //!< Horizontal line right from axis.
-	//!< Note horizontal will not be useful for 1D plot - will be on the axis.
-	boost::svg::cone, //!< Cone pointing up - 'rightwayup'.
-	boost::svg::triangle, //!< Triangle pointing down 'upsidedown'.
-	boost::svg::star, //!< Star (using polygon).
-	boost::svg::lozenge, //!< Lozenge or square with corners pointing up and down..
-	boost::svg::diamond, //!< Diamond card shape.
-	boost::svg::heart, //!< Heart playing card shape.
-	boost::svg::club, //!< Club playing card shape.
-	boost::svg::spade, //!< Spade playing card shape.
-	boost::svg::asterisk, //!< Asterix as * symbol
-	boost::svg::cross, //!< cross
-};
+#include "serialize.hpp"
+#include "svgplot_custom.hpp"
 
 using namespace boost::svg;
 
-void simulateandplot() {
+void plotinterd() {
   
     std::vector<std::vector<double> > var;
     deserialize("couple_siminterd_distance.cols", var);
@@ -166,12 +82,14 @@ void simulateandplot() {
         my_plot.plot(data, label).line_on(true).stroke_color(svg_colors[i]).shape(none).line_color(svg_colors[i]);
     }
 
+    my_plot.copyright_holder("HitDIC").copyright_date("2018-7-30");
+
     my_plot.write("interd.svg");
 }
 
 int main(int argc, char *argv[])
 {
-	
-    simulateandplot();
+	std::cout << "double limit: " << std::numeric_limits<double>::epsilon() << std::endl;
+    plotinterd();
     return 0;
 }
